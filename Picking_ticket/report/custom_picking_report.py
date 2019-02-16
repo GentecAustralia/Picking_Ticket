@@ -12,11 +12,11 @@ class StockPickingReport(models.AbstractModel):
         report = self.env['ir.actions.report']._get_report_from_name('custom_au_in.report_custom_picking_order')
         picking = self.env[report.model].browse(docids)
         sale_move_prod = {}
-        move_line_non_kit = []
         for sale_lines in self.env['sale.order.line'].search([('order_id','=',picking.origin)]):
             key = (sale_lines.product_id.name,sale_lines.name,sale_lines.product_uom_qty,sale_lines.product_id.qty_available)
             bom_id = sale_lines.product_id.product_tmpl_id.bom_ids
             move_line_kit_list = []
+            move_line_non_kit = []
             if bom_id:
                 for bom_lines in bom_id.bom_line_ids:
                     for move_line in picking.move_lines:
@@ -34,4 +34,4 @@ class StockPickingReport(models.AbstractModel):
             'docs': picking,
             'kit_prod' : sale_move_prod,
             'non_kit_prod' : move_line_non_kit,
-            }
+        }
